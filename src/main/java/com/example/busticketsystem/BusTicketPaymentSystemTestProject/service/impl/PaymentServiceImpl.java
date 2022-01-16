@@ -1,6 +1,5 @@
 package com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.impl;
 
-import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Flight;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Payment;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.repository.PaymentRepository;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.PaymentService;

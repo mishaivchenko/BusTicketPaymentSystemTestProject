@@ -7,11 +7,10 @@ import javax.persistence.*;
 public class Payment {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    //@Column(name = "payment_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne (optional=true, mappedBy="payment")
+    @OneToOne(optional = true, mappedBy = "payment", cascade = CascadeType.ALL)
     private Ticket ticket;
 
     @Column(name = "STATUS")

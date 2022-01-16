@@ -10,16 +10,12 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Tick
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.FlightService;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.PaymentService;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.TicketService;
-
 import io.swagger.annotations.Api;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,8 +40,8 @@ public class TicketManagementController {
     }
 
     @Autowired
-    public void setRestTemplate(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplate = restTemplateBuilder.build();
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     @Autowired
@@ -56,22 +52,19 @@ public class TicketManagementController {
 
     @GetMapping("/")
     public List<FlightInfoDTO> getFlights() {
-        List<FlightInfoDTO> flightInfoDTOs = new ArrayList<FlightInfoDTO>();
 
         List<Flight> flights = flightService.findAll();
 
-        if(flights != null && flights.size() > 0) {
-            flightInfoDTOs = flights.stream()
-                    .map(FlightInfoDTO::new)
-                    .collect(Collectors.toList());
-        }
-        return flightInfoDTOs;
+        return flights.stream()
+                .map(FlightInfoDTO::new)
+                .collect(Collectors.toList());
+
     }
 
 
     @PostMapping("/")
     public long orderTicket(@RequestBody OrderTicketDTO orderTicketDTO) {
-        String resourceURL = "http://localhost:8080/api/payments/";
+        final String RESOURCE_URL = "http://localhost:8080/api/payments/";
 
         Ticket ticket = new Ticket();
         ticket.setOwner(orderTicketDTO.getInitials());
@@ -79,12 +72,12 @@ public class TicketManagementController {
         Flight flight = flightService.getFlight(orderTicketDTO.getFlight_id());
         flight.addTicket(savedTicket);
 
-        HttpEntity<Long> request = new HttpEntity(new NewPaymentDTO(
+        HttpEntity<NewPaymentDTO> request = new HttpEntity<>(new NewPaymentDTO(
                 flight.getPrice(),
                 orderTicketDTO.getInitials())
         );
 
-        Long payment_id = restTemplate.postForObject(resourceURL, request, Long.class);
+        Long payment_id = restTemplate.postForObject(RESOURCE_URL, request, Long.class);
 
         Payment payment = paymentService.getPayment(payment_id);
         savedTicket.setPayment(payment);
@@ -94,17 +87,17 @@ public class TicketManagementController {
 
         return savedTicket.getId();
     }
+
     @GetMapping("/{ticket_id}")
-    public FlightInfoWithPaymentStatusDTO getFlightInfo(@PathVariable long ticket_id){
+    public FlightInfoWithPaymentStatusDTO getFlightInfo(@PathVariable long ticket_id) {
 
         Ticket ticket = ticketService.getTicket(ticket_id);
         Flight flight = ticket.getFlight();
-        if(flight != null){
-        return new FlightInfoWithPaymentStatusDTO(flight, ticket.getPayment().getStatus());
+        if (flight != null) {
+            return new FlightInfoWithPaymentStatusDTO(flight, ticket.getPayment().getStatus());
         }
         return null;
     }
-
 
 
 }

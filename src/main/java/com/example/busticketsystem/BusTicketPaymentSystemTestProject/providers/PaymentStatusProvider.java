@@ -1,8 +1,6 @@
 package com.example.busticketsystem.BusTicketPaymentSystemTestProject.providers;
 
 
-import org.springframework.stereotype.Component;
-
 import java.util.Arrays;
 import java.util.Random;
 
@@ -21,7 +19,7 @@ public class PaymentStatusProvider {
         return Arrays.stream(PaymentStatus.values())
                 .skip(r.nextInt(PaymentStatus.values().length))
                 .findFirst()
-                .get();
+                .orElse(PaymentStatus.NEW);
     }
 
     public PaymentStatus getNew() {

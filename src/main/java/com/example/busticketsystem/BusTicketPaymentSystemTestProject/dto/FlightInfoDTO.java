@@ -13,11 +13,11 @@ public class FlightInfoDTO {
     private final int ticket_count;
 
     public FlightInfoDTO(Flight flight) {
-         this.date = flight.getDate();
-         this.price = flight.getPrice();
-         this.to = flight.getTo();
-         this.from = flight.getFrom();
-         this.ticket_count = flight.getCount() - flight.getTickets().size();
+        this.date = flight.getDate();
+        this.price = flight.getPrice();
+        this.to = flight.getTo();
+        this.from = flight.getFrom();
+        this.ticket_count = flight.getCount() - flight.getTickets().size();
     }
 
     public Calendar getDate() {

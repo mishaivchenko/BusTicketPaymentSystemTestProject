@@ -6,10 +6,10 @@ import javax.persistence.*;
 @Table(name = "TICKET")
 public class Ticket {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne (optional=true, cascade=CascadeType.ALL)
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
     private Payment payment;
 
     @Column(name = "OWNER")
@@ -17,7 +17,6 @@ public class Ticket {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Flight flight;
-
 
 
     public long getId() {

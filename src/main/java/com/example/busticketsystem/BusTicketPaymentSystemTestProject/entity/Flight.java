@@ -10,7 +10,7 @@ import java.util.List;
 public class Flight {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "START")
     private String start;
@@ -70,7 +70,7 @@ public class Flight {
         return tickets;
     }
 
-    public void addTicket(Ticket ticket){
+    public void addTicket(Ticket ticket) {
         tickets.add(ticket);
         ticket.setFlight(this);
     }
