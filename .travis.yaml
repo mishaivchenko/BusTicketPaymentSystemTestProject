@@ -1,0 +1,17 @@
+language: java
+
+default_text_charset: 'utf-8'
+
+stages:
+
+  - compile
+  - test
+
+compile:
+  stage: compile
+  script:
+    - mvn clean package
+
+test:
+  stage: test
+  script: mvn test
