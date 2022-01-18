@@ -1,6 +1,7 @@
-package com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.impl;
+package com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.db;
 
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Ticket;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.TicketNotFoundException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.repository.TicketRepository;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Ticket getTicket(Long ticketId) {
-        return ticketRepository.findById(ticketId).orElse(null);
+        return ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new TicketNotFoundException(String.valueOf(ticketId)));
     }
 
     @Override

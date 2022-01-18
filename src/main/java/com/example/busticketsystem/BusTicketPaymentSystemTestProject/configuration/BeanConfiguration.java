@@ -1,6 +1,8 @@
 package com.example.busticketsystem.BusTicketPaymentSystemTestProject.configuration;
 
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.facade.OrderTicketFacade;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.providers.PaymentStatusProvider;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.rest.RestIntegrationService;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,5 @@ public class BeanConfiguration {
     public RestTemplate restTemplate() {
         return restTemplateBuilder().build();
     }
-
 
 }

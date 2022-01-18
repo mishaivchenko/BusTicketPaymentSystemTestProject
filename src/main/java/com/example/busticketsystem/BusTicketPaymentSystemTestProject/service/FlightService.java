@@ -3,6 +3,7 @@ package com.example.busticketsystem.BusTicketPaymentSystemTestProject.service;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Flight;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FlightService {
     List<Flight>findAll();

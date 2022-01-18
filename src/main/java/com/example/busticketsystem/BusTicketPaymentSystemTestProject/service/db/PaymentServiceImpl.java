@@ -1,4 +1,4 @@
-package com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.impl;
+package com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.db;
 
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Payment;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.repository.PaymentRepository;
