@@ -33,7 +33,7 @@ public class PaymentController {
     public long createPayment(@RequestBody NewPaymentDTO paymentDTO) {
 
         Payment payment = new Payment();
-        payment.setStatus(String.valueOf(paymentStatusProvider.getNew()));
+        payment.setStatus(paymentStatusProvider.getNew());
         payment.setOwner(paymentDTO.getOwner());
         payment.setPrice(paymentDTO.getSum());
 

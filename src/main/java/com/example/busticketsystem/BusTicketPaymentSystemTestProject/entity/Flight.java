@@ -1,6 +1,7 @@
 package com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -73,6 +74,11 @@ public class Flight {
     public void addTicket(Ticket ticket) {
         tickets.add(ticket);
         ticket.setFlight(this);
+    }
+
+    public boolean removeTicket(Ticket ticket){
+        ticket.setFlight(null);
+        return tickets.remove(ticket);
     }
 
     public void setTickets(List<Ticket> tickets) {

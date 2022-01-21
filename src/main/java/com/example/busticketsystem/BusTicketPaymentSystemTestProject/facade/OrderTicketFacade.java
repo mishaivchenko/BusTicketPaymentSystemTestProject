@@ -4,6 +4,7 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.NewPaym
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Flight;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Payment;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Ticket;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.TicketOutOfStockException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.FlightService;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.PaymentService;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.TicketService;
@@ -36,10 +37,16 @@ public class OrderTicketFacade {
     }
 
     public long orderTicket(long flightId, String initials){
+        Flight flight = flightService.getFlight(flightId);
+
+        if(flight.getTickets().size() >= flight.getCount()){
+            throw new TicketOutOfStockException(String.valueOf(flightId));
+        }
+
         Ticket ticket = new Ticket();
         ticket.setOwner(initials);
         Ticket savedTicket = ticketService.saveTicket(ticket);
-        Flight flight = flightService.getFlight(flightId);
+
         flight.addTicket(savedTicket);
 
 

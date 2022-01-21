@@ -51,7 +51,7 @@ public class PaymentCreationTest {
     @Test
     public void createPaymentTest_TicketOwnerNameMustBeTheSame() {
         Payment payment = new Payment();
-        payment.setStatus(String.valueOf(paymentStatusProvider.getRandomStatus()));
+        payment.setStatus(paymentStatusProvider.getRandomStatus());
         Ticket ticket = new Ticket();
 
         String ownerName = "Misha";

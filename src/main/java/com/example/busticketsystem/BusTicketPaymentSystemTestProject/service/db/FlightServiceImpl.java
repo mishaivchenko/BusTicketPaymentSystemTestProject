@@ -36,6 +36,7 @@ public class FlightServiceImpl implements FlightService {
         flightRepository.save(flight);
     }
 
+
     @Override
     public void updateFlight(Flight flight) {
         flightRepository.save(flight);

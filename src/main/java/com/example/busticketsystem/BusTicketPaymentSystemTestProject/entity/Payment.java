@@ -1,5 +1,7 @@
 package com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity;
 
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.providers.PaymentStatus;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,7 +16,7 @@ public class Payment {
     private Ticket ticket;
 
     @Column(name = "STATUS")
-    private String status;
+    private PaymentStatus status;
 
     @Column(name = "PRICE")
     private int price;
@@ -38,11 +40,11 @@ public class Payment {
         this.ticket = ticket;
     }
 
-    public String getStatus() {
+    public PaymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PaymentStatus status) {
         this.status = status;
     }
 
