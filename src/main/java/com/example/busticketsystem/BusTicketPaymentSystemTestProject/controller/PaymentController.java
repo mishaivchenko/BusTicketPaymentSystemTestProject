@@ -6,6 +6,8 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.providers.P
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.PaymentService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,14 +32,20 @@ public class PaymentController {
     }
 
     @PostMapping("/")
-    public long createPayment(@RequestBody NewPaymentDTO paymentDTO) {
+    public ResponseEntity<Long> createPayment(@RequestBody NewPaymentDTO paymentDTO) {
 
         Payment payment = new Payment();
         payment.setStatus(paymentStatusProvider.getNew());
         payment.setOwner(paymentDTO.getOwner());
         payment.setPrice(paymentDTO.getSum());
 
-        return paymentService.savePayment(payment).getId();
+        Payment savedPayment = paymentService.savePayment(payment);
+        if (savedPayment != null){
+            return new ResponseEntity<>(savedPayment.getId(), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 }

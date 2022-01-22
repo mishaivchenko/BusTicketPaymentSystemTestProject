@@ -10,6 +10,8 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.Fli
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.TicketService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,23 +55,31 @@ public class TicketManagementController {
 
 
     @PostMapping("/")
-    public long orderTicket(@RequestBody OrderTicketDTO orderTicketDTO) {
+    public ResponseEntity<Long> orderTicket(@RequestBody OrderTicketDTO orderTicketDTO) {
 
-        return orderTicketFacade.orderTicket(
+        Ticket ticket = orderTicketFacade.orderTicket(
                 orderTicketDTO.getFlight_id(),
                 orderTicketDTO.getInitials()
         );
+
+        if (ticket == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(ticket.getId(), HttpStatus.CREATED);
     }
 
     @GetMapping("/{ticket_id}")
-    public FlightInfoWithPaymentStatusDTO getFlightInfo(@PathVariable long ticket_id) {
+    public ResponseEntity<FlightInfoWithPaymentStatusDTO> getFlightInfo(@PathVariable long ticket_id) {
 
         Ticket ticket = ticketService.getTicket(ticket_id);
         Flight flight = ticket.getFlight();
-        if (flight != null) {
-            return new FlightInfoWithPaymentStatusDTO(flight, ticket.getPayment().getStatus());
+
+        if (flight == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return null;
+        return new ResponseEntity<>(new FlightInfoWithPaymentStatusDTO(flight, ticket.getPayment().getStatus()), HttpStatus.OK);
+
+
     }
 
 

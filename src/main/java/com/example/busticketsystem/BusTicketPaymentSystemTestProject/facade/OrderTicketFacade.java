@@ -36,7 +36,7 @@ public class OrderTicketFacade {
         this.restIntegrationService = restIntegrationService;
     }
 
-    public long orderTicket(long flightId, String initials){
+    public Ticket orderTicket(long flightId, String initials){
         Flight flight = flightService.getFlight(flightId);
 
         if(flight.getTickets().size() >= flight.getCount()){
@@ -57,6 +57,6 @@ public class OrderTicketFacade {
 
         flightService.saveFlight(flight);
 
-        return savedTicket.getId();
+        return savedTicket;
     }
 }
