@@ -1,6 +1,7 @@
 package com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.db;
 
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Payment;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.providers.PaymentStatus;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.repository.PaymentRepository;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,10 @@ public class PaymentServiceInDb implements PaymentService {
     @Override
     public void updatePayment(Payment payment) {
         paymentRepository.save(payment);
+    }
+
+    @Override
+    public List<Payment> findByStatus(PaymentStatus status) {
+        return paymentRepository.findByStatus(status);
     }
 }

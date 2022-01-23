@@ -3,6 +3,7 @@ package com.example.busticketsystem.BusTicketPaymentSystemTestProject.facade;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Flight;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Payment;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Ticket;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.EmptyInitialsException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.TicketOutOfStockException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.FlightService;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.PaymentService;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
 
 @Service
@@ -50,10 +50,15 @@ public class OrderTicketFacade {
     }
 
 
-    public Ticket orderTicket(long flightId, @NotEmpty String initials) {
+    public Ticket orderTicket(long flightId, String initials) {
+
+        if (initials.isEmpty()) {
+            throw new EmptyInitialsException();
+        }
+
         Flight flight = flightService.getFlight(flightId);
 
-        if (flight.getTickets().size() + ticketServiceInCache.getAll(flightId).size() >= flight.getCount()) {
+        if (flight.getTickets().size() + ticketServiceInCache.getAll(flightId).size() > flight.getCount() - 1) {
             throw new TicketOutOfStockException(String.valueOf(flightId));
         }
 

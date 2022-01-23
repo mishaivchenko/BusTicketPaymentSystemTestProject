@@ -3,7 +3,7 @@ package com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "TICKET")
+@Table(name = "TICKETS")
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

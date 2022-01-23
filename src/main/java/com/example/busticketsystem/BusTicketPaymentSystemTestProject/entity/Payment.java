@@ -5,7 +5,7 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.providers.P
 import javax.persistence.*;
 
 @Entity
-@Table(name = "PAYMENT")
+@Table(name = "PAYMENTS")
 public class Payment {
 
     @Id

@@ -45,7 +45,7 @@ public class PaymentStatusScheduler {
 
     @Scheduled(fixedRate = 6000)
     public void processPayments() {
-        List<Payment> allPayments = paymentService.findAll();
+        List<Payment> allPayments = paymentService.findByStatus(PaymentStatus.NEW);
 
         for (Payment payment : allPayments) {
             if (PaymentStatus.NEW.equals(payment.getStatus())) {
@@ -53,7 +53,7 @@ public class PaymentStatusScheduler {
 
                 if (PaymentStatus.FAILED.equals(payment.getStatus())) {
                     Ticket ticket = payment.getTicket();
-                    Flight flight = ticket.getFlight();
+                    Flight flight = ticket.getFlight(); //fix nullPointer!!!
                     ticket.setPayment(null);
                     payment.setTicket(null);
                     ticketServiceInCache.saveTicket(ticket);

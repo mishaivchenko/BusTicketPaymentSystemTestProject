@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "FLIGHT")
+@Table(name = "FLIGHTS")
 public class Flight {
 
     @Id
@@ -24,7 +24,7 @@ public class Flight {
     private int count;
 
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Ticket> tickets = new HashSet<>();
+    private final Set<Ticket> tickets = new HashSet<>();
 
     public long getId() {
         return id;
