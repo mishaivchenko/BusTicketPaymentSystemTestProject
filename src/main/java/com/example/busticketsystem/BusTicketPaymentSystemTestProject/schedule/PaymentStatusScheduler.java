@@ -43,7 +43,7 @@ public class PaymentStatusScheduler {
         this.ticketServiceInCache = ticketServiceInCache;
     }
 
-    @Scheduled(fixedRate = 6000)
+    @Scheduled(fixedRate = 10000)
     public void processPayments() {
         List<Payment> allPayments = paymentService.findByStatus(PaymentStatus.NEW);
 
