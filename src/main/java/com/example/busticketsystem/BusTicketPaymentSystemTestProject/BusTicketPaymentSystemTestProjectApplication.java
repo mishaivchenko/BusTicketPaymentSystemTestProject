@@ -9,6 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class BusTicketPaymentSystemTestProjectApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(BusTicketPaymentSystemTestProjectApplication.class, args)
+        SpringApplication.run(BusTicketPaymentSystemTestProjectApplication.class, args);
     }
 }
