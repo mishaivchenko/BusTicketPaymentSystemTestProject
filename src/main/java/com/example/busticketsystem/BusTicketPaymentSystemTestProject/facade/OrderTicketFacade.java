@@ -58,7 +58,7 @@ public class OrderTicketFacade {
 
         Flight flight = flightService.getFlight(flightId);
 
-        if (flight.getTickets().size() + ticketServiceInCache.getAll(flightId).size() > flight.getCount() - 1) {
+        if (flight.getTickets().size() + ticketServiceInCache.getAll(flightId).size() >= flight.getCount()) {
             throw new TicketOutOfStockException(String.valueOf(flightId));
         }
 

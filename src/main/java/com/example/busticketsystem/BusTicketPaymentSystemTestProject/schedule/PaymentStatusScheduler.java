@@ -53,12 +53,11 @@ public class PaymentStatusScheduler {
 
                 if (PaymentStatus.FAILED.equals(payment.getStatus())) {
                     Ticket ticket = payment.getTicket();
-                    Flight flight = ticket.getFlight(); //fix nullPointer!!!
+                    Flight flight = ticket.getFlight();
                     ticket.setPayment(null);
                     payment.setTicket(null);
                     ticketServiceInCache.saveTicket(ticket);
                     flight.removeTicket(ticket);
-
                     flightService.saveFlight(flight);
                 }
 

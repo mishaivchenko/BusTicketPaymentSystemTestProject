@@ -12,11 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.mockito.Mockito.when;
 
@@ -42,7 +38,7 @@ public class OrderTicketFacadeTest {
 
     @Test(expected = EmptyInitialsException.class)
     public void orderTicketWithEmptyInitialsTest() {
-        orderTicketFacade.orderTicket(1,"");
+        orderTicketFacade.orderTicket(1, "");
     }
 
     @Test(expected = TicketOutOfStockException.class)
@@ -58,6 +54,6 @@ public class OrderTicketFacadeTest {
 
         when(flightService.getFlight(flight.getId())).thenReturn(flight);
 
-        orderTicketFacade.orderTicket(1,"Ivan Ivanovich");
+        orderTicketFacade.orderTicket(1, "Ivan Ivanovich");
     }
 }

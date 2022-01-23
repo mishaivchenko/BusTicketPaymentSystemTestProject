@@ -48,7 +48,7 @@ public class PaymentController {
 
     @GetMapping("/status")
     public ResponseEntity<PaymentStatus> getRandomStatus() {
-        return new ResponseEntity<>(paymentStatusProvider.getRandomStatus(), HttpStatus.CREATED);
+        return new ResponseEntity<>(paymentStatusProvider.getRandomStatus(), HttpStatus.OK);
     }
 
 }

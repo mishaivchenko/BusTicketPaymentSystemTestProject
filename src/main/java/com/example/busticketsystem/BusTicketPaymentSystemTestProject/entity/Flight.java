@@ -23,7 +23,7 @@ public class Flight {
     @Column
     private int count;
 
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     private final Set<Ticket> tickets = new HashSet<>();
 
     public long getId() {
@@ -77,7 +77,11 @@ public class Flight {
 
     public boolean removeTicket(Ticket ticket) {
         ticket.setFlight(null);
-        return tickets.remove(ticket);
+        return tickets.remove(
+                tickets.stream().filter(t -> ticket.getId() == t.getId())
+                        .findFirst()
+                        .orElse(new Ticket())
+        );
     }
 
     public int getPrice() {

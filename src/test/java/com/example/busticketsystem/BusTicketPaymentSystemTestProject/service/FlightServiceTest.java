@@ -1,10 +1,8 @@
 package com.example.busticketsystem.BusTicketPaymentSystemTestProject.service;
 
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.FlightNotFoundException;
-import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.TicketNotFoundException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.repository.FlightRepository;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.db.FlightServiceInDb;
-import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.db.TicketServiceInDb;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
