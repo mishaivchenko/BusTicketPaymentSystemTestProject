@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PaymentServiceImpl implements PaymentService {
+public class PaymentServiceInDb implements PaymentService {
 
     private PaymentRepository paymentRepository;
 

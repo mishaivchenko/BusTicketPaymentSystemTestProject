@@ -1,10 +1,9 @@
 package com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "FLIGHT")
@@ -25,7 +24,7 @@ public class Flight {
     private int count;
 
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ticket> tickets = new ArrayList<>();
+    private Set<Ticket> tickets = new HashSet<>();
 
     public long getId() {
         return id;
@@ -67,7 +66,7 @@ public class Flight {
         this.date = date;
     }
 
-    public List<Ticket> getTickets() {
+    public Set<Ticket> getTickets() {
         return tickets;
     }
 
@@ -76,13 +75,9 @@ public class Flight {
         ticket.setFlight(this);
     }
 
-    public boolean removeTicket(Ticket ticket){
+    public boolean removeTicket(Ticket ticket) {
         ticket.setFlight(null);
         return tickets.remove(ticket);
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
     }
 
     public int getPrice() {

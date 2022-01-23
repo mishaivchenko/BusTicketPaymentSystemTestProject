@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class FlightServiceImpl implements FlightService {
+public class FlightServiceInDb implements FlightService {
 
     private FlightRepository flightRepository;
 

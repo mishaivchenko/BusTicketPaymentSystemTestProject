@@ -9,7 +9,7 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne(optional = true)
+    @OneToOne
     private Payment payment;
 
     @Column(name = "OWNER")

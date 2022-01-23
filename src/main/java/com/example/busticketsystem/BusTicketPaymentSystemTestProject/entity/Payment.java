@@ -12,9 +12,10 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne(optional = true, mappedBy = "payment", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "payment")
     private Ticket ticket;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
     private PaymentStatus status;
 

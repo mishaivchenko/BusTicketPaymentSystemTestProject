@@ -1,6 +1,5 @@
 package com.example.busticketsystem.BusTicketPaymentSystemTestProject.facade;
 
-import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.NewPaymentDTO;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Flight;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Payment;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Ticket;
@@ -10,42 +9,61 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.Pay
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.TicketService;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.rest.RestIntegrationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import javax.validation.constraints.NotEmpty;
+import java.util.Objects;
 
 @Service
 public class OrderTicketFacade {
     private FlightService flightService;
-    private TicketService ticketService;
+    private TicketService ticketServiceInDb;
     private PaymentService paymentService;
     private RestIntegrationService restIntegrationService;
+    private TicketService ticketServiceInCache;
+
 
     @Autowired
     public void setFlightService(FlightService flightService) {
         this.flightService = flightService;
     }
+
     @Autowired
-    public void setTicketService(TicketService ticketService) {
-        this.ticketService = ticketService;
+    public void setTicketServiceInDb(TicketService ticketServiceInDb) {
+        this.ticketServiceInDb = ticketServiceInDb;
     }
+
     @Autowired
     public void setPaymentService(PaymentService paymentService) {
         this.paymentService = paymentService;
     }
+
     @Autowired
     public void setRestIntegrationService(RestIntegrationService restIntegrationService) {
         this.restIntegrationService = restIntegrationService;
     }
 
-    public Ticket orderTicket(long flightId, String initials){
+    @Autowired
+    public void setTicketServiceInCache(@Qualifier("ticketServiceInCache") TicketService ticketServiceInCache) {
+        this.ticketServiceInCache = ticketServiceInCache;
+    }
+
+
+    public Ticket orderTicket(long flightId, @NotEmpty String initials) {
         Flight flight = flightService.getFlight(flightId);
 
-        if(flight.getTickets().size() >= flight.getCount()){
+        if (flight.getTickets().size() + ticketServiceInCache.getAll(flightId).size() >= flight.getCount()) {
             throw new TicketOutOfStockException(String.valueOf(flightId));
         }
 
-        Ticket ticket = new Ticket();
+        Ticket ticket = ticketServiceInCache.getTicketByFlightId(flightId).stream()
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(new Ticket());
+
         ticket.setOwner(initials);
-        Ticket savedTicket = ticketService.saveTicket(ticket);
+        Ticket savedTicket = ticketServiceInDb.saveTicket(ticket);
 
         flight.addTicket(savedTicket);
 
