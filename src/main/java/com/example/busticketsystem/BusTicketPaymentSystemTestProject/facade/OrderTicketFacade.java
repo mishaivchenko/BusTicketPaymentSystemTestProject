@@ -49,37 +49,85 @@ public class OrderTicketFacade {
         this.ticketServiceInCache = ticketServiceInCache;
     }
 
-
+    /**
+     *
+     * @param flightId - flight for which the ticket was purchased
+     * @param initials - client initials
+     * @return new ordered ticket with payment status NEW
+     * @throws EmptyInitialsException
+     * @throws TicketOutOfStockException
+     */
     public Ticket orderTicket(long flightId, String initials) {
 
-        if (initials.isEmpty()) {
-            throw new EmptyInitialsException();
-        }
+        checkInitials(initials);
 
         Flight flight = flightService.getFlight(flightId);
 
-        if (flight.getTickets().size() + ticketServiceInCache.getAll(flightId).size() >= flight.getCount()) {
-            throw new TicketOutOfStockException(String.valueOf(flightId));
-        }
+        checkAvailableTicketsCount(flight);
 
+        Ticket ticket = getTicket(flightId, initials);
+
+        flight.addTicket(ticket);
+
+        Payment payment = createPayment(initials, flight);
+
+        ticket.setPayment(payment);
+
+        flightService.saveFlight(flight);
+
+        return ticket;
+    }
+
+    /**
+     *
+     * @param initials - client initials
+     * @param flight - - flight for which the payment was purchased
+     * @return payment with NEW status what created thought web service
+     * controller - PaymentController
+     * api - /api/payments/
+     */
+    private Payment createPayment(String initials, Flight flight) {
+        Long paymentId = restIntegrationService.createPayment(flight.getPrice(), initials);
+
+        return paymentService.getPayment(paymentId);
+    }
+
+    /**
+     * @param flightId - flight id
+     * @param initials - client initials
+     * @return ticket from cache (already ordered ticket with FAILED payment status).
+     * if cache is empty - create new Ticket
+     */
+    private Ticket getTicket(long flightId, String initials) {
         Ticket ticket = ticketServiceInCache.getTicketByFlightId(flightId).stream()
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(new Ticket());
 
         ticket.setOwner(initials);
-        Ticket savedTicket = ticketServiceInDb.saveTicket(ticket);
 
-        flight.addTicket(savedTicket);
+        return ticketServiceInDb.saveTicket(ticket);
+    }
 
+    /**
+     *
+     * @param flight - check is flight has available ticket
+     * if all tickets are out of stock throws TicketOutOfStockException
+     */
 
-        Long paymentId = restIntegrationService.createPayment(flight.getPrice(), initials);
+    private void checkAvailableTicketsCount(Flight flight) {
+        if (flight.getTickets().size() + ticketServiceInCache.getAll(flight.getId()).size() >= flight.getCount()) {
+            throw new TicketOutOfStockException(String.valueOf(flight.getId()));
+        }
+    }
 
-        Payment payment = paymentService.getPayment(paymentId);
-        savedTicket.setPayment(payment);
+    /**
+     *
+     * @param initials - client initials
+     * if the client initials is empty throws EmptyInitialsException
+     */
+    private void checkInitials(String initials) {
 
-        flightService.saveFlight(flight);
-
-        return savedTicket;
+        if (initials.isEmpty())  throw new EmptyInitialsException();
     }
 }
