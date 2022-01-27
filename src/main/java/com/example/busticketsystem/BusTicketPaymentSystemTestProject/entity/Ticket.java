@@ -9,13 +9,23 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
+    /*@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "payment_id", referencedColumnName = "id")*/
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(name = "ticket_payment",
+            joinColumns = {
+                    @JoinColumn(name = "ticket_id", referencedColumnName = "id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "payment_id", referencedColumnName = "id")}
+    )
     private Payment payment;
 
     @Column(name = "OWNER")
     private String owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flight_id", nullable = true)
     private Flight flight;
 
 
@@ -61,4 +71,8 @@ public class Ticket {
         return id == ticket.id;
     }
 
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
+    }
 }

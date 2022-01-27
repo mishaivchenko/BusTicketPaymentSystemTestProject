@@ -50,7 +50,6 @@ public class OrderTicketFacade {
     }
 
     /**
-     *
      * @param flightId - flight for which the ticket was purchased
      * @param initials - client initials
      * @return new ordered ticket with payment status NEW
@@ -65,23 +64,22 @@ public class OrderTicketFacade {
 
         checkAvailableTicketsCount(flight);
 
-        Ticket ticket = getTicket(flightId, initials);
+        Ticket ticket = getTicket(flight, initials);
 
         flight.addTicket(ticket);
 
         Payment payment = createPayment(initials, flight);
 
         ticket.setPayment(payment);
-
+        ticketServiceInDb.saveTicket(ticket);
         flightService.saveFlight(flight);
 
         return ticket;
     }
 
     /**
-     *
      * @param initials - client initials
-     * @param flight - - flight for which the payment was purchased
+     * @param flight   - - flight for which the payment was purchased
      * @return payment with NEW status what created thought web service
      * controller - PaymentController
      * api - /api/payments/
@@ -93,41 +91,40 @@ public class OrderTicketFacade {
     }
 
     /**
-     * @param flightId - flight id
+     * @param flight   - flight for which the ticket ordered
      * @param initials - client initials
      * @return ticket from cache (already ordered ticket with FAILED payment status).
      * if cache is empty - create new Ticket
      */
-    private Ticket getTicket(long flightId, String initials) {
-        Ticket ticket = ticketServiceInCache.getTicketByFlightId(flightId).stream()
+    private Ticket getTicket(Flight flight, String initials) {
+        Ticket ticket = ticketServiceInCache.getTicketByFlightId(flight.getId()).stream()
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(new Ticket());
 
         ticket.setOwner(initials);
-
+        ticket.setFlight(flight);
         return ticketServiceInDb.saveTicket(ticket);
     }
 
     /**
-     *
      * @param flight - check is flight has available ticket
-     * if all tickets are out of stock throws TicketOutOfStockException
+     *               if all tickets are out of stock throws TicketOutOfStockException
      */
 
     private void checkAvailableTicketsCount(Flight flight) {
-        if (flight.getTickets().size() + ticketServiceInCache.getAll(flight.getId()).size() >= flight.getCount()) {
+        if (flight.getTickets().size() == flight.getCount() &&
+                 ticketServiceInCache.getAll(flight.getId()).isEmpty()) {
             throw new TicketOutOfStockException(String.valueOf(flight.getId()));
         }
     }
 
     /**
-     *
      * @param initials - client initials
-     * if the client initials is empty throws EmptyInitialsException
+     *                 if the client initials is empty throws EmptyInitialsException
      */
     private void checkInitials(String initials) {
 
-        if (initials.isEmpty())  throw new EmptyInitialsException();
+        if (initials.isEmpty()) throw new EmptyInitialsException();
     }
 }

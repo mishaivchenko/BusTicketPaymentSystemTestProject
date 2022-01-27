@@ -1,4 +1,4 @@
-package com.example.busticketsystem.BusTicketPaymentSystemTestProject.controller;
+package com.example.busticketsystem.BusTicketPaymentSystemTestProject.controller.paymentSystem;
 
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.NewPaymentDTO;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Payment;

@@ -45,6 +45,9 @@ public class OrderTicketFacadeTest {
     public void orderOutOfStockTicketTest() {
         Ticket ticket = new Ticket();
         Ticket ticket1 = new Ticket();
+        ticket.setId(1);
+        ticket.setId(2);
+
 
         Flight flight = new Flight();
         flight.setId(1);
@@ -54,6 +57,6 @@ public class OrderTicketFacadeTest {
 
         when(flightService.getFlight(flight.getId())).thenReturn(flight);
 
-        orderTicketFacade.orderTicket(1, "Ivan Ivanovich");
+        orderTicketFacade.orderTicket(flight.getId(), "Ivan Ivanovich");
     }
 }

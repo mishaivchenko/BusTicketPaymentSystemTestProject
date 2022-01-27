@@ -36,14 +36,18 @@ public class TicketServiceInCache implements TicketService {
 
     @Override
     public Ticket saveTicket(Ticket ticket) {
-        HashSet<Ticket> tickets = availableTicketMap.get(ticket.getFlight().getId());
+        long id = ticket.getFlight().getId();
+
+        ticket.setFlight(null);
+
+        HashSet<Ticket> tickets = availableTicketMap.get(id);
 
         if (tickets != null) {
             tickets.add(ticket);
             return ticket;
         }
         availableTicketMap.computeIfAbsent(
-                ticket.getFlight().getId(),
+                id,
                 k -> new HashSet<>(Collections.singletonList(ticket))
         );
         return ticket;
