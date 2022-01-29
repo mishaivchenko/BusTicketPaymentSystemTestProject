@@ -55,28 +55,32 @@ public class PaymentStatusScheduler {
         List<Payment> allPayments = paymentService.findByStatus(PaymentStatus.NEW);
 
         for (Payment payment : allPayments) {
-            if (PaymentStatus.NEW.equals(payment.getStatus())) {
-                payment.setStatus(restIntegrationService.getRandomPaymentStatus());
 
-                if (PaymentStatus.FAILED.equals(payment.getStatus())) {
-                    processPaymentWithFailedStatus(payment);
-                } else {
-                    paymentService.savePayment(payment);
-                }
+            payment.setStatus(restIntegrationService.getRandomPaymentStatus());
+
+            if (PaymentStatus.FAILED.equals(payment.getStatus())) {
+                processPaymentWithFailedStatus(payment);
+            } else {
+                paymentService.savePayment(payment);
             }
+
         }
     }
 
     private void processPaymentWithFailedStatus(Payment payment) {
         Ticket ticket = payment.getTicket();
         Flight flight = ticket.getFlight();
+
         ticket.setPayment(null);
         payment.setTicket(null);
 
         paymentService.savePayment(payment);
         ticketServiceInCache.saveTicket(ticket);
+
         Ticket savedTicket = ticketServiceInDb.saveTicket(ticket);
+
         flight.removeTicket(savedTicket);
+
         flightService.saveFlight(flight);
     }
 }

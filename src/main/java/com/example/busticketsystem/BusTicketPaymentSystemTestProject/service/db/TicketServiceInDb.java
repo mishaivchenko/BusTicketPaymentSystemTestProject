@@ -25,7 +25,7 @@ public class TicketServiceInDb implements TicketService {
     }
 
     @Override
-    public Ticket getTicket(Long ticketId) {
+    public Ticket getTicket(Long ticketId) throws TicketNotFoundException {
         return ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new TicketNotFoundException(String.valueOf(ticketId)));
     }

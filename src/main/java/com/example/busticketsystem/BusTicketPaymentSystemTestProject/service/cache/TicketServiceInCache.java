@@ -4,6 +4,7 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Tick
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.TicketNotFoundException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.TicketService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class TicketServiceInCache implements TicketService {
     }
 
     @Override
-    public Ticket getTicket(Long ticketId) {
+    public Ticket getTicket(Long ticketId) throws TicketNotFoundException {
         return availableTicketMap
                 .values().stream()
                 .flatMap(Collection::stream)
@@ -62,11 +63,13 @@ public class TicketServiceInCache implements TicketService {
     public List<Ticket> getTicketByFlightId(Long flightId) {
         HashSet<Ticket> tickets = availableTicketMap.get(flightId);
 
-        if (tickets != null) {
+        if (!CollectionUtils.isEmpty(tickets)) {
             Ticket ticket = tickets.stream()
                     .findFirst()
                     .orElse(null);
+
             tickets.remove(ticket);
+
             return Collections.singletonList(ticket);
         }
 

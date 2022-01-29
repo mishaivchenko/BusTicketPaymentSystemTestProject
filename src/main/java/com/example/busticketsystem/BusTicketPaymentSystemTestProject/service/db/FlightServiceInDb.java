@@ -25,7 +25,7 @@ public class FlightServiceInDb implements FlightService {
     }
 
     @Override
-    public Flight getFlight(Long flightId) {
+    public Flight getFlight(Long flightId) throws FlightNotFoundException {
         return flightRepository.findById(flightId)
                 .orElseThrow(() -> new FlightNotFoundException(String.valueOf(flightId)));
     }

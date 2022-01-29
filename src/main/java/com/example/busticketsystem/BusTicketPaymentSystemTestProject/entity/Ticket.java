@@ -9,8 +9,6 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    /*@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "payment_id", referencedColumnName = "id")*/
     @OneToOne(cascade = CascadeType.ALL)
     @JoinTable(name = "ticket_payment",
             joinColumns = {

@@ -24,7 +24,7 @@ public class FlightServiceTest {
     }
 
     @Test(expected = FlightNotFoundException.class)
-    public void whenTicketIdIsIncorrectThenThrowTicketNotFoundException() {
+    public void whenTicketIdIsIncorrectThenThrowTicketNotFoundException() throws FlightNotFoundException {
         when(flightRepository.getOne(0L)).thenReturn(null);
 
         flightService.getFlight(0L);

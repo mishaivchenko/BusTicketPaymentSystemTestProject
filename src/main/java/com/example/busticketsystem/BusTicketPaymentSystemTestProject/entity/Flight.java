@@ -1,7 +1,7 @@
 package com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity;
 
 import javax.persistence.*;
-import java.util.Calendar;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +17,7 @@ public class Flight {
     @Column(name = "TO")
     private String to;
     @Column(name = "DATE")
-    private Calendar date;
+    private LocalDate date;
     @Column(name = "PRICE")
     private int price;
     @Column
@@ -58,11 +58,11 @@ public class Flight {
         this.to = to;
     }
 
-    public Calendar getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Calendar date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -77,11 +77,7 @@ public class Flight {
 
     public boolean removeTicket(Ticket ticket) {
         ticket.setFlight(null);
-        return tickets.remove(
-                tickets.stream().filter(t -> ticket.getId() == t.getId())
-                        .findFirst()
-                        .orElse(new Ticket())
-        );
+        return tickets.remove(ticket);
     }
 
     public int getPrice() {

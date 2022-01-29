@@ -4,8 +4,11 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.FlightI
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.FlightInfoWithPaymentStatusDTO;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.OrderTicketDTO;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Flight;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Payment;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Ticket;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.base.BusinessLogicException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.facade.OrderTicketFacade;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.providers.PaymentStatus;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.FlightService;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.TicketService;
 import io.swagger.annotations.Api;
@@ -44,17 +47,23 @@ public class FlightController {
         this.ticketService = ticketService;
     }
 
-
     @GetMapping("/{ticket_id}")
-    public ResponseEntity<FlightInfoWithPaymentStatusDTO> getFlightInfoByTicketId(@PathVariable long ticket_id) {
+    public ResponseEntity<FlightInfoWithPaymentStatusDTO> getFlightInfoByTicketId(@PathVariable long ticket_id)
+            throws BusinessLogicException {
 
         Ticket ticket = ticketService.getTicket(ticket_id);
-        Flight flight = ticket.getFlight();
-
-        if (flight == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (ticket.getFlight() == null) {
+            return new ResponseEntity<>(
+                    new FlightInfoWithPaymentStatusDTO(new Flight(), PaymentStatus.FAILED), HttpStatus.OK
+            );
         }
-        return new ResponseEntity<>(new FlightInfoWithPaymentStatusDTO(flight, ticket.getPayment().getStatus()), HttpStatus.OK);
+
+        Flight flight = ticket.getFlight();
+        Payment payment = ticket.getPayment();
+
+        return new ResponseEntity<>(
+                new FlightInfoWithPaymentStatusDTO(flight, payment.getStatus()), HttpStatus.OK
+        );
     }
 
     @GetMapping("/")
@@ -68,16 +77,14 @@ public class FlightController {
     }
 
     @PostMapping("/{flight_id}/")
-    public ResponseEntity<Long> orderTicket(@RequestBody OrderTicketDTO orderTicketDTO) {
+    public ResponseEntity<Long> orderTicket(@RequestBody OrderTicketDTO orderTicketDTO)
+            throws BusinessLogicException {
 
         Ticket ticket = orderTicketFacade.orderTicket(
                 orderTicketDTO.getFlight_id(),
                 orderTicketDTO.getInitials()
         );
 
-        if (ticket == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         return new ResponseEntity<>(ticket.getId(), HttpStatus.CREATED);
     }
 

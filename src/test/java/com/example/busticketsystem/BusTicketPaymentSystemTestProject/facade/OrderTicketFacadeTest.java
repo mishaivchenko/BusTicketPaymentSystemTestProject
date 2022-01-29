@@ -4,6 +4,7 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Flig
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Ticket;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.EmptyInitialsException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.TicketOutOfStockException;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.base.BusinessLogicException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.FlightService;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.PaymentService;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.TicketService;
@@ -37,12 +38,12 @@ public class OrderTicketFacadeTest {
     }
 
     @Test(expected = EmptyInitialsException.class)
-    public void orderTicketWithEmptyInitialsTest() {
+    public void orderTicketWithEmptyInitialsTest() throws BusinessLogicException {
         orderTicketFacade.orderTicket(1, "");
     }
 
     @Test(expected = TicketOutOfStockException.class)
-    public void orderOutOfStockTicketTest() {
+    public void orderOutOfStockTicketTest() throws BusinessLogicException {
         Ticket ticket = new Ticket();
         Ticket ticket1 = new Ticket();
         ticket.setId(1);

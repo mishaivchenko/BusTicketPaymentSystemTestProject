@@ -32,7 +32,7 @@ public class TicketServiceTest {
     }
 
     @Test(expected = TicketNotFoundException.class)
-    public void whenTicketIdIsIncorrectThenThrowTicketNotFoundException() {
+    public void whenTicketIdIsIncorrectThenThrowTicketNotFoundException() throws TicketNotFoundException {
         when(ticketRepository.getOne(0L)).thenReturn(null);
 
         ticketService.getTicket(0L);

@@ -2,11 +2,11 @@ package com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto;
 
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Flight;
 
-import java.util.Calendar;
+import java.time.LocalDate;
 
 public class FlightInfoDTO {
 
-    private final Calendar date;
+    private final LocalDate date;
     private final int price;
     private final String to;
     private final String from;
@@ -20,7 +20,7 @@ public class FlightInfoDTO {
         this.ticket_count = flight.getCount() - flight.getTickets().size();
     }
 
-    public Calendar getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

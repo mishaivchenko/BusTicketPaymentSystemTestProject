@@ -5,6 +5,7 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Paym
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Ticket;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.EmptyInitialsException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.TicketOutOfStockException;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.base.BusinessLogicException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.FlightService;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.PaymentService;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.TicketService;
@@ -13,10 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Service
 public class OrderTicketFacade {
+
     private FlightService flightService;
     private TicketService ticketServiceInDb;
     private PaymentService paymentService;
@@ -56,7 +56,7 @@ public class OrderTicketFacade {
      * @throws EmptyInitialsException
      * @throws TicketOutOfStockException
      */
-    public Ticket orderTicket(long flightId, String initials) {
+    public Ticket orderTicket(long flightId, String initials) throws BusinessLogicException {
 
         checkInitials(initials);
 
@@ -98,12 +98,12 @@ public class OrderTicketFacade {
      */
     private Ticket getTicket(Flight flight, String initials) {
         Ticket ticket = ticketServiceInCache.getTicketByFlightId(flight.getId()).stream()
-                .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(new Ticket());
 
         ticket.setOwner(initials);
         ticket.setFlight(flight);
+
         return ticketServiceInDb.saveTicket(ticket);
     }
 
@@ -112,9 +112,10 @@ public class OrderTicketFacade {
      *               if all tickets are out of stock throws TicketOutOfStockException
      */
 
-    private void checkAvailableTicketsCount(Flight flight) {
+    private void checkAvailableTicketsCount(Flight flight) throws TicketOutOfStockException {
         if (flight.getTickets().size() == flight.getCount() &&
-                 ticketServiceInCache.getAll(flight.getId()).isEmpty()) {
+                ticketServiceInCache.getAll(flight.getId()).isEmpty()) {
+
             throw new TicketOutOfStockException(String.valueOf(flight.getId()));
         }
     }
@@ -123,8 +124,7 @@ public class OrderTicketFacade {
      * @param initials - client initials
      *                 if the client initials is empty throws EmptyInitialsException
      */
-    private void checkInitials(String initials) {
-
+    private void checkInitials(String initials) throws EmptyInitialsException {
         if (initials.isEmpty()) throw new EmptyInitialsException();
     }
 }
