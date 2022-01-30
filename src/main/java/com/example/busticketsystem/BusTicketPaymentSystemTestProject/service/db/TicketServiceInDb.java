@@ -7,8 +7,8 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.Tic
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TicketServiceInDb implements TicketService {
@@ -46,7 +46,12 @@ public class TicketServiceInDb implements TicketService {
     }
 
     @Override
-    public HashSet<Ticket> getAll(Long key) {
-        throw new UnsupportedOperationException("Not implemented");
+    public Set<Ticket> getAll(Long key) {
+        throw new UnsupportedOperationException("Not implemented. Implement me if needed");
+    }
+
+    @Override
+    public Long getFlightIdBuyTicketId(long ticketId) {
+        throw new UnsupportedOperationException("Not implemented. Implement me if needed");
     }
 }

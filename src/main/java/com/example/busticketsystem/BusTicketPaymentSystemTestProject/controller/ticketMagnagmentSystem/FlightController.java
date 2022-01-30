@@ -4,7 +4,6 @@ import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.FlightI
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.FlightInfoWithPaymentStatusDTO;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.OrderTicketDTO;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Flight;
-import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Payment;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Ticket;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.base.BusinessLogicException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.facade.OrderTicketFacade;
@@ -32,6 +31,13 @@ public class FlightController {
 
     private OrderTicketFacade orderTicketFacade;
 
+    private TicketService ticketServiceInCache;
+
+    @Autowired
+    public void setTicketServiceInCache(TicketService ticketServiceInCache) {
+        this.ticketServiceInCache = ticketServiceInCache;
+    }
+
     @Autowired
     public void setOrderTicketFacade(OrderTicketFacade orderTicketFacade) {
         this.orderTicketFacade = orderTicketFacade;
@@ -51,18 +57,22 @@ public class FlightController {
     public ResponseEntity<FlightInfoWithPaymentStatusDTO> getFlightInfoByTicketId(@PathVariable long ticket_id)
             throws BusinessLogicException {
 
+        Flight flight;
+        PaymentStatus status;
+
         Ticket ticket = ticketService.getTicket(ticket_id);
+
         if (ticket.getFlight() == null) {
-            return new ResponseEntity<>(
-                    new FlightInfoWithPaymentStatusDTO(new Flight(), PaymentStatus.FAILED), HttpStatus.OK
-            );
+            Long flightIdBuyTicketId = ticketServiceInCache.getFlightIdBuyTicketId(ticket_id);
+            flight = flightService.getFlight(flightIdBuyTicketId);
+            status = PaymentStatus.FAILED;
+        } else {
+            flight = ticket.getFlight();
+            status = ticket.getPayment().getStatus();
         }
 
-        Flight flight = ticket.getFlight();
-        Payment payment = ticket.getPayment();
-
         return new ResponseEntity<>(
-                new FlightInfoWithPaymentStatusDTO(flight, payment.getStatus()), HttpStatus.OK
+                new FlightInfoWithPaymentStatusDTO(flight, status), HttpStatus.OK
         );
     }
 

@@ -15,7 +15,7 @@ public class TicketServiceInCache implements TicketService {
     Map<Long, HashSet<Ticket>> availableTicketMap = new HashMap<>();
 
     @Override
-    public HashSet<Ticket> getAll(Long key) {
+    public Set<Ticket> getAll(Long key) {
         return availableTicketMap.getOrDefault(key, new HashSet<>());
     }
 
@@ -74,5 +74,15 @@ public class TicketServiceInCache implements TicketService {
         }
 
         return new ArrayList<>();
+    }
+
+    @Override
+    public Long getFlightIdBuyTicketId(long ticketId) {
+        Map.Entry<Long, HashSet<Ticket>> entry = availableTicketMap.entrySet().stream()
+                .filter(e -> e.getValue().stream().anyMatch(t -> t.getId() == ticketId))
+                .findAny().orElse(null);
+
+        return entry == null ? 0L : entry.getKey();
+
     }
 }

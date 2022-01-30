@@ -3,8 +3,8 @@ package com.example.busticketsystem.BusTicketPaymentSystemTestProject.service;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Ticket;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.TicketNotFoundException;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public interface TicketService {
     List<Ticket> findAll();
@@ -17,7 +17,9 @@ public interface TicketService {
 
     List<Ticket> getTicketByFlightId(Long flightId);
 
-    HashSet<Ticket> getAll(Long key);
+    Set<Ticket> getAll(Long key);
+
+    Long getFlightIdBuyTicketId(long ticketId);
 
 
 }
