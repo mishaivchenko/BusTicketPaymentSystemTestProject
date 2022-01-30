@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 
 @Component
@@ -22,8 +23,17 @@ public class PaymentStatusScheduler {
     private FlightService flightService;
     private TicketService ticketServiceInCache;
     private RestIntegrationService restIntegrationService;
-
     private TicketService ticketServiceInDb;
+
+    private final Consumer<Payment> processStatusConsumer = (payment) -> {
+        payment.setStatus(restIntegrationService.getRandomPaymentStatus());
+
+        if (PaymentStatus.FAILED.equals(payment.getStatus())) {
+            processPaymentWithFailedStatus(payment);
+        } else {
+            paymentService.savePayment(payment);
+        }
+    };
 
     @Autowired
     public void setRestIntegrationService(RestIntegrationService restIntegrationService) {
@@ -54,20 +64,11 @@ public class PaymentStatusScheduler {
     public void processPayments() {
         List<Payment> allPayments = paymentService.findByStatus(PaymentStatus.NEW);
 
-        for (Payment payment : allPayments) {
-
-            payment.setStatus(restIntegrationService.getRandomPaymentStatus());
-
-            if (PaymentStatus.FAILED.equals(payment.getStatus())) {
-                processPaymentWithFailedStatus(payment);
-            } else {
-                paymentService.savePayment(payment);
-            }
-
-        }
+        allPayments.forEach(processStatusConsumer);
     }
 
     private void processPaymentWithFailedStatus(Payment payment) {
+
         Ticket ticket = payment.getTicket();
         Flight flight = ticket.getFlight();
 
