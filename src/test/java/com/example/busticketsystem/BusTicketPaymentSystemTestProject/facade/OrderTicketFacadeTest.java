@@ -3,6 +3,7 @@ package com.example.busticketsystem.BusTicketPaymentSystemTestProject.facade;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Flight;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Ticket;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.EmptyInitialsException;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.FlightIsOutToDayException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.TicketOutOfStockException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.base.BusinessLogicException;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.service.FlightService;
@@ -14,6 +15,9 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 import static org.mockito.Mockito.when;
 
@@ -59,5 +63,18 @@ public class OrderTicketFacadeTest {
         when(flightService.getFlight(flight.getId())).thenReturn(flight);
 
         orderTicketFacade.orderTicket(flight.getId(), "Ivan Ivanovich");
+    }
+
+    @Test(expected = FlightIsOutToDayException.class)
+    public void orderOutOfDateTicketTest() throws BusinessLogicException {
+        Flight flight = new Flight();
+        flight.setId(1L);
+        flight.setCount(1);
+        flight.setDate(LocalDate.now().minus(Period.ofYears(1)));
+
+        when(flightService.getFlight(flight.getId())).thenReturn(flight);
+
+        orderTicketFacade.orderTicket(flight.getId(), "Ivan Ivanovich");
+
     }
 }
