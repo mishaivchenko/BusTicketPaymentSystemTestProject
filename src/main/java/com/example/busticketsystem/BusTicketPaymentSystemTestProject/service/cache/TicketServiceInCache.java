@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Service
 public class TicketServiceInCache implements TicketService {
 
-    Map<Long, HashSet<Ticket>> availableTicketMap = new HashMap<>();
+    Map<Long, Set<Ticket>> availableTicketMap = new HashMap<>();
 
     @Override
     public Set<Ticket> getAll(Long key) {
@@ -41,7 +41,7 @@ public class TicketServiceInCache implements TicketService {
 
         ticket.setFlight(null);
 
-        HashSet<Ticket> tickets = availableTicketMap.get(id);
+        Set<Ticket> tickets = availableTicketMap.get(id);
 
         if (tickets != null) {
             tickets.add(ticket);
@@ -61,7 +61,7 @@ public class TicketServiceInCache implements TicketService {
 
     @Override
     public List<Ticket> getTicketByFlightId(Long flightId) {
-        HashSet<Ticket> tickets = availableTicketMap.get(flightId);
+        Set<Ticket> tickets = availableTicketMap.get(flightId);
 
         if (!CollectionUtils.isEmpty(tickets)) {
             Ticket ticket = tickets.stream()
@@ -78,7 +78,7 @@ public class TicketServiceInCache implements TicketService {
 
     @Override
     public Long getFlightIdBuyTicketId(long ticketId) {
-        Map.Entry<Long, HashSet<Ticket>> entry = availableTicketMap.entrySet().stream()
+        Map.Entry<Long, Set<Ticket>> entry = availableTicketMap.entrySet().stream()
                 .filter(e -> e.getValue().stream().anyMatch(t -> t.getId() == ticketId))
                 .findAny().orElse(null);
 
