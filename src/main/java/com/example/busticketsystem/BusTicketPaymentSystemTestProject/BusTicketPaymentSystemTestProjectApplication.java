@@ -2,10 +2,12 @@ package com.example.busticketsystem.BusTicketPaymentSystemTestProject;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @SpringBootApplication(scanBasePackages = {"com.example.busticketsystem.BusTicketPaymentSystemTestProject.*"})
+@ConfigurationPropertiesScan
 public class BusTicketPaymentSystemTestProjectApplication {
 
     public static void main(String[] args) {

@@ -3,6 +3,7 @@ package com.example.busticketsystem.BusTicketPaymentSystemTestProject.providers;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class PaymentStatusProvider {

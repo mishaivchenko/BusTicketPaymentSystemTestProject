@@ -25,7 +25,7 @@ public class PaymentStatusScheduler {
     private RestIntegrationService restIntegrationService;
     private TicketService ticketServiceInDb;
 
-    private final Consumer<Payment> processStatusConsumer = (payment) -> {
+    private final Consumer<Payment> processStatusConsumer = payment -> {
         payment.setStatus(restIntegrationService.getRandomPaymentStatus());
 
         if (PaymentStatus.FAILED.equals(payment.getStatus())) {

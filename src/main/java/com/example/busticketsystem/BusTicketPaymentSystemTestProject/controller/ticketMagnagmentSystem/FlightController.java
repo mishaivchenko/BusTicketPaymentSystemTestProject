@@ -3,6 +3,7 @@ package com.example.busticketsystem.BusTicketPaymentSystemTestProject.controller
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.FlightInfoDTO;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.FlightInfoWithPaymentStatusDTO;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.OrderTicketDTO;
+import com.example.busticketsystem.BusTicketPaymentSystemTestProject.dto.UnmarshallDTO;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Flight;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.entity.Ticket;
 import com.example.busticketsystem.BusTicketPaymentSystemTestProject.exception.base.BusinessLogicException;
@@ -96,6 +97,19 @@ public class FlightController {
         );
 
         return new ResponseEntity<>(ticket.getId(), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<String> unmarshallTest(@RequestBody UnmarshallDTO unmarshallDTO)
+            throws BusinessLogicException {
+
+        String name = unmarshallDTO.getName();
+        List<String> list = unmarshallDTO.getList();
+
+        System.out.println(list);
+
+
+        return new ResponseEntity<>(name, HttpStatus.CREATED);
     }
 
 }

@@ -84,6 +84,40 @@ public class OrderTicketFacade {
     }
 
     /**
+     * @param initials - client customer initials
+     * @throws EmptyInitialsException if the client initials is empty
+     */
+    private void checkInitials(String initials) throws EmptyInitialsException {
+        if (initials.isEmpty()) throw new EmptyInitialsException();
+    }
+
+    /**
+     * @param flight - flight for which the ticket was purchased
+     * @throws TicketOutOfStockException if all tickets are out of stock
+     */
+
+    private void checkAvailableTicketsCount(Flight flight) throws TicketOutOfStockException {
+        if (flight.getTickets().size() == flight.getCount() &&
+                ticketServiceInCache.getAll(flight.getId()).isEmpty()) {
+            throw new TicketOutOfStockException(String.valueOf(flight.getId()));
+        }
+    }
+
+    /**
+     * @param flight - flight for which the ticket was purchased
+     * @throws FlightIsOutToDayException if the flight is out to date
+     */
+    private void checkIsOutToDay(Flight flight) throws FlightIsOutToDayException {
+
+        LocalDate now = LocalDate.now();
+        LocalDate flightDate = flight.getDate();
+
+        if (now.isAfter(flightDate) || now.isEqual(flightDate)) {
+            throw new FlightIsOutToDayException(String.valueOf(flight.getId()));
+        }
+    }
+
+    /**
      * @param initials - client initials
      * @param flight   - - flight for which the payment was purchased
      * @return payment with NEW status what created thought web service
@@ -111,40 +145,5 @@ public class OrderTicketFacade {
         ticket.setFlight(flight);
 
         return ticketServiceInDb.saveTicket(ticket);
-    }
-
-    /**
-     * @param initials - client customer initials
-     * @throws EmptyInitialsException if the client initials is empty
-     */
-    private void checkInitials(String initials) throws EmptyInitialsException {
-        if (initials.isEmpty()) throw new EmptyInitialsException();
-    }
-
-    /**
-     * @param flight - flight for which the ticket was purchased
-     * @throws FlightIsOutToDayException if the flight is out to date
-     */
-    private void checkIsOutToDay(Flight flight) throws FlightIsOutToDayException {
-
-        LocalDate now = LocalDate.now();
-        LocalDate flight_day = flight.getDate();
-
-        if (now.isAfter(flight_day) || now.isEqual(flight_day)) {
-            throw new FlightIsOutToDayException(String.valueOf(flight.getId()));
-        }
-    }
-
-
-    /**
-     * @param flight - flight for which the ticket was purchased
-     * @throws TicketOutOfStockException if all tickets are out of stock
-     */
-
-    private void checkAvailableTicketsCount(Flight flight) throws TicketOutOfStockException {
-        if (flight.getTickets().size() == flight.getCount() &&
-                ticketServiceInCache.getAll(flight.getId()).isEmpty()) {
-            throw new TicketOutOfStockException(String.valueOf(flight.getId()));
-        }
     }
 }
